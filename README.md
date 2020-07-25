@@ -1,2 +1,2 @@
-# fourier_transform
-A processing program to demostrate the concepts of Fourier Transform in a visualized form.
+# Visualized the concepts of Fourier Transform
+This is a Processing 3 program to demostrate the concepts of Fourier Transform in a visualized form.It's basically come from the idea in this [viseo](https://www.youtube.com/watch?v=spUNpyF58BY&t=904s) made by [3Blue1Brown](https://www.youtube.com/channel/UCYO_jab_esuFRV4b17AJtAw).I think this is the best video for explaining fourier transform ever, so I write this program to demonstrate the motion graph in the video.
