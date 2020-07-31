@@ -1,12 +1,16 @@
-float angle = radians(90);           // starting angle for sin wave 
-float sinFreq = 2;                   // freqency of sin wave
+import static iadt.creative.Inputs.*;
+
+float angle = radians(20);           // starting angle for sin wave
+float[] angles;
+float[] sinFreqs;
 float circleFreq = 2;                // freq of circling sin wave around the rogin
 float offset = 100;                    // offset to move sin wave up
 
 float amp;                           // amplitude of sin wave
 float scaleY = 100, scaleX = 10;     // scale factor for sin wave
 float timesPerSec = 100;             // drawing frequency
-float xInc, cInc;                    // 
+float cInc;                    //
+float[] xIncs;
 float prevX = 0, prevY = 0, prevCX = 0, prevCY = 0; // previous point of sin wave and circling graph
 float x, y, cx, cy, cAng = 0;
 float sumX = 0, sumY = 0, avgX, avgY, total = 0;
@@ -16,14 +20,33 @@ boolean started = false;
 PImage rArea;
 
 void settings() {
-  size(660, int(scaleY * 6 + margin * 3));                 // size() can't take var as argument in setup() 
+  size(660, int(scaleY * 6 + margin * 3));                 // size() can't take var as argument in setup()
 }
 
 void setup() {
   textSize(18);
   background(0);                                           // fill background to black
   frameRate(100);                                          // frequency for updateing screen 
-  xInc = radians(360 * sinFreq / timesPerSec);             // angles varied every sec for sin wave
+  String freqStr;
+  freqStr = readString("Enter frequencies of the sin waves:", "2 3");
+  while ((angle = readInt("Enter starting angle of sin wave:", 90)) < 0);
+  angle = radians(angle);
+  while ((offset = readInt("Enter offset of sin wave:", 100)) < 0);
+  while ((circleFreq = readByte("Enter frequency of cycling:", 3)) < 0);
+  String[] freqs = freqStr.split(" ");
+  sinFreqs = new float[freqs.length];
+  xIncs = new float[freqs.length];
+  angles = new float[freqs.length];
+  for(int i = 0;i < freqs.length;i++) {
+    try {
+      sinFreqs[i] = Float.parseFloat(freqs[i]); 
+    }
+    catch(Exception e) {
+      sinFreqs[i] = 1;
+    }
+    xIncs[i] = radians(360 * sinFreqs[i] / timesPerSec);             // angles varied every sec for sin wave
+    angles[i] = angle; 
+  }
   cInc = radians(360 * circleFreq / timesPerSec);          // angles varied every sec for circling graph
   origX = width / 2;                                       // origin X of circling graph
   origY = (height - waveAreaHeight) / 2 + waveAreaHeight;  // origin Y of circling graph
@@ -47,8 +70,11 @@ void setup() {
 }
 
 void draw() {
-  angle = angle + xInc;            // compute new angle
-  amp = sin(angle);                // get sin value
+  amp = 0;
+  for(int i = 0;i < sinFreqs.length;i++) {
+    angles[i] = angles[i] + xIncs[i];            // compute new angle
+    amp += sin(angles[i]);                // get sin value
+  }
   x = prevX + 0.1 * scaleX;        // get curr x position
   y = amp * scaleY + offset;       // get curr  y position
   if(!started) {                   // if it's the first point of sin wave 
