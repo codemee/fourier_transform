@@ -32,7 +32,7 @@ void setup() {
   while ((angle = readInt("Enter starting angle of sin wave:", 90)) < 0);
   angle = radians(angle);
   while ((offset = readInt("Enter offset of sin wave:", 100)) < 0);
-  while ((circleFreq = readByte("Enter frequency of cycling:", 3)) < 0);
+  while ((circleFreq = readFloat("Enter frequency of cycling:", 3)) < 0);
   String[] freqs = freqStr.split(" ");
   sinFreqs = new float[freqs.length];
   xIncs = new float[freqs.length];
