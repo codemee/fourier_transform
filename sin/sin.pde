@@ -7,20 +7,20 @@ float circleFreq = 2;                // freq of circling sin wave around the rog
 float offset = 100;                    // offset to move sin wave up
 
 float amp;                           // amplitude of sin wave
-float scaleY = 100, scaleX = 10;     // scale factor for sin wave
+float maxY = 100, scaleY, scaleX = 10;     // scale factor for sin wave
 float timesPerSec = 100;             // drawing frequency
 float cInc;                    //
 float[] xIncs;
 float prevX = 0, prevY = 0, prevCX = 0, prevCY = 0; // previous point of sin wave and circling graph
 float x, y, cx, cy, cAng = 0;
 float sumX = 0, sumY = 0, avgX, avgY, total = 0;
-float origX, origY, margin = 20, waveAreaHeight = (scaleY + margin) * 2;
+float origX, origY, margin = 20, waveAreaHeight = (maxY + margin) * 2;
 float origT = waveAreaHeight / 2 + offset;
 boolean started = false;
 PImage rArea;
 
 void settings() {
-  size(660, int(scaleY * 6 + margin * 3));                 // size() can't take var as argument in setup()
+  size(660, int(maxY * 6 + margin * 3));                 // size() can't take var as argument in setup()
 }
 
 void setup() {
@@ -47,6 +47,7 @@ void setup() {
     xIncs[i] = radians(360 * sinFreqs[i] / timesPerSec);             // angles varied every sec for sin wave
     angles[i] = angle; 
   }
+  scaleY = maxY / freqs.length;
   cInc = radians(360 * circleFreq / timesPerSec);          // angles varied every sec for circling graph
   origX = width / 2;                                       // origin X of circling graph
   origY = (height - waveAreaHeight) / 2 + waveAreaHeight;  // origin Y of circling graph
@@ -89,16 +90,16 @@ void draw() {
   if(x < width - margin * 3) {     // shift original wave right for margin pixels 
     rArea = get(                   // get pixels for wave
       int(margin + x), int(margin), 
-      int(width - margin * 2 - x), int(scaleY * 2));
+      int(width - margin * 2 - x), int(maxY * 2));
     rArea.loadPixels();            // loading pixels to mem
     noStroke();                    // clear right margin pixels
     fill(0);
-    rect(margin + x, margin, margin + 1, scaleY * 2);
+    rect(margin + x, margin, margin + 1, maxY * 2);
     stroke(0, 255, 0);             // green axies
     line(                          // redraw time (X) axis for sin wave
       margin, origT, 
       width - margin, origT);
-    for(int i = 0;i < scaleY * 2;i++){ // copy pixels to right
+    for(int i = 0;i < maxY * 2;i++){ // copy pixels to right
       for(int j = 0;j < width - margin * 3 - x;j++){
         int idx = int(i * (width - margin * 2 - x) + j);
         rArea.pixels[int(margin + idx)] = rArea.pixels[idx];
