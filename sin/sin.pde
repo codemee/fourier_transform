@@ -1,6 +1,6 @@
 import static iadt.creative.Inputs.*;
 
-float angle = radians(20);           // starting angle for sin wave
+float angle;           // starting angle for sin wave
 float[] angles;
 float[] sinFreqs;
 float circleFreq = 2;                // freq of circling sin wave around the rogin
@@ -15,7 +15,7 @@ float prevX = 0, prevY = 0, prevCX = 0, prevCY = 0; // previous point of sin wav
 float x, y, cx, cy, cAng = 0;
 float sumX = 0, sumY = 0, avgX, avgY, total = 0;
 float origX, origY, margin = 20, waveAreaHeight = (maxY + margin) * 2;
-float origT = waveAreaHeight / 2 + offset;
+float origT;
 boolean started = false;
 PImage rArea;
 
@@ -27,13 +27,14 @@ void setup() {
   textSize(18);
   background(0);                                           // fill background to black
   frameRate(100);                                          // frequency for updateing screen 
-  String freqStr;
+  String freqStr, angleStr;
   freqStr = readString("Enter frequencies of the sin waves:", "2 3");
-  while ((angle = readInt("Enter starting angle of sin wave:", 90)) < 0);
-  angle = radians(angle);
+  angleStr = readString("Enter starting angle of sin waves:", "90");
   while ((offset = readInt("Enter offset of sin wave:", 100)) < 0);
+  origT = waveAreaHeight / 2 + offset;
   while ((circleFreq = readFloat("Enter frequency of cycling:", 3)) < 0);
   String[] freqs = freqStr.split(" ");
+  String[] angs = angleStr.split(" ");
   sinFreqs = new float[freqs.length];
   xIncs = new float[freqs.length];
   angles = new float[freqs.length];
@@ -45,7 +46,15 @@ void setup() {
       sinFreqs[i] = 1;
     }
     xIncs[i] = radians(360 * sinFreqs[i] / timesPerSec);             // angles varied every sec for sin wave
-    angles[i] = angle; 
+    if(i < angs.length) {
+      try {
+        angles[i] = radians(Float.parseFloat(angs[i]));
+        angle = angles[i];
+      }
+      catch(Exception e) {
+        angles[i] = angle;
+      }
+    }
   }
   scaleY = maxY / freqs.length;
   cInc = radians(360 * circleFreq / timesPerSec);          // angles varied every sec for circling graph
@@ -58,7 +67,7 @@ void setup() {
   text("t", width - margin, origT + 20);                   // axies label
   line(                                                    // Y axis for sin wave
     margin, margin, 
-    margin, origT);
+    margin, waveAreaHeight - margin);
   text("Y", margin - 12, margin);                          // axies label
   line(                                                    // X axis for circling graph
     margin, origY,    
@@ -67,7 +76,7 @@ void setup() {
   line(                                                    // Y axis for circling graph
     origX, waveAreaHeight, 
     origX, height - margin);
-  text("Y", origX -12, waveAreaHeight);                    // axies label
+  text("Y", origX - 16, waveAreaHeight + 12);                    // axies label
 }
 
 void draw() {
